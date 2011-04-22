@@ -7,4 +7,4 @@ Eduardo Ruiz <eduarbo@gmail.com>
 
 My Talks
 --------
-- link:sproutcore.html[WTF is Sproutcore?]
+- link:http://dl.dropbox.com/u/245556/talks/sproutcore.html[WTF is Sproutcore?]
