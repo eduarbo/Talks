@@ -1,3 +1,10 @@
 My Talks
 ========
+Eduardo Ruiz <eduarbo@gmail.com>
+:Author Initials: ERM
+:author:    Eduardo Ruiz
+:website:   http://eduarbo.com
+
+My Talks
+--------
 - link:sproutcore.html[WTF is Sproutcore?]
