@@ -1,6 +1,5 @@
 My Talks
 ========
 
-- link:http://eduarbo.github.io/Talks/wtf-is-sproutcore/index.html[WTF is Sproutcore?]
-- link:http://eduarbo.github.io/Talks/js-event-loop/index.html[Understanding the javascript
-  event loop]
+- [WTF is Sproutcore?](http://eduarbo.github.io/Talks/wtf-is-sproutcore/index.html)
+- [Understanding the javascript event loop](http://eduarbo.github.io/Talks/js-event-loop/index.html)
