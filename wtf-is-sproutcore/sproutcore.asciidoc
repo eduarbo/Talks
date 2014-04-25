@@ -1,0 +1,141 @@
+WTF is Sproutcore?
+===================
+Eduardo Ruiz <eduarbo@gmail.com>
+:Author Initials: ERM
+:author:    Eduardo Ruiz
+:toc:
+:icons:
+:backend:   slidy
+:max-width: 45em
+:website:   http://eduarbo.com
+
+Sproutcore?
+-----------
+
+image::images/sproutcore/logo.png["Sproutcore",width=100]
+
+In a nutshell::
+SproutCore is an HTML5 application framework for building responsive, desktop-caliber apps in any modern web browser, without plugins.
+
+[role="incremental"]
+- SproutCore is server-agnostic and will plug into your existing backend
+- SproutCore applications are designed around the Model-View-Controller paradigm
+- SC.Object and Classes
+- Properties, Bindings and Observers (aka KVO)
+- Run Loops
+
+SC.Object and Classes
+-------------------
+SproutCore maintains a traditional object-oriented structure at the root of which lies SC.Object. SC.Object defines all the basic features needed by a class in SproutCore. These include Properties, Observers and Bindings, which I will go into detail on below.
+
+----
+var task = SC.Object.create({
+  title: 'Conquer the whole World! Muahahahaha',
+  done:  NO
+});
+
+task.get('title'); // Conquer the whole World! Muahahahaha
+
+task.get('done');  // False
+----
+
+NOTE: By convention private properties and functions are prefaced with an underscore
+
+Properties, Bindings and Observers
+----------------------------------
+Properties, Bindings and Observers all make up what is known as the Key-Value Observing (KVO) system of SproutCore.
+
+Getters and Setters::
+For KVO to work properly, SproutCore implements getters and setters to track changes to objects. This is why it’s important to use get and set for any properties that might use observers, bindings, or computed properties. Failure to do so will quickly cause your app to get out of sync. I know this may sound like a bit of a pain, but don’t worry, you’ll quickly get used to using get and set and you’ll forget you ever had to worry about it.
+
+----
+var task = SC.Object.create({
+  title: 'Conquer the whole World! Muahahahaha',
+  done:  NO
+});
+
+task.get('title'); // Conquer the whole World! Muahahahaha
+task.set('title', 'Stop playing Age of Empires');
+task.get('title'); // Stop playing Age of Empires
+----
+
+Properties, Bindings and Observers
+----------------------------------
+Computed Properties::
+Sometimes you may have properties that depend on other properties. These are known as computed properties. Computed properties are defined as functions with a call to property and a list of the dependent properties.
+
+----
+MyApp.Person = SC.Object.extend({
+  firstName: null,
+  lastName:  null,
+  fullName: function(){
+    return this.get('firstName')+' '+this.get('lastName');
+  }.property('firstName', 'lastName')
+});
+
+var person = MyApp.Person.create({
+  firstName: 'Jaime',
+  lastName:  'Duende'
+});
+
+person.get('fullName'); // Jaime Duende
+person.set('lastName', 'Costecha');
+person.get('fullName'); // Jaime Costecha
+----
+
+Observers
+---------
+Closely related to the concept of properties is that of observers. Observers do exactly what their name suggests, they observe properties, watching for changes. The most basic observer looks like this:
+
+----
+var obj = SC.Object.create({
+  value: null,
+  valueDidUpdate: function(){
+    alert('New Value: '+this.get('value'));
+  }.observes('value')
+});
+
+obj.set('value', 'Test');
+// alert('New Value: Test');
+----
+  
+Observer Notification::
+It is important to realize that observers have to be notified of property changes. The set method handles this for us automatically – this is one of the reasons get and set should be used to access properties. However, there are cases where using set doesn’t work. In these cases you can use notifyPropertyChange to tell observers that the property has been updated, i.e. this.notifyPropertyChange('value').
+
+Bindings
+--------
+When you put together Properties and Observers, you end up with Bindings. Bindings serve to link two properties together. For example:
+
+----
+MyApp.userController = SC.Object.create({
+  name: null
+});
+
+MyApp.mainView = SC.View.create({
+  userBinding: SC.Binding.from('MyApp.userController.name')
+});
+
+MyApp.userController.set('name', 'Joe');
+
+// The runloop must run
+console.log(MyApp.mainView.get('user')); // Joe
+
+MyApp.mainView.set('user', 'Jim');
+
+// The runloop must run
+console.log(MyApp.userController.get('name')); // Jim
+----
+
+Bindings
+--------
+NOTE: One very important difference between bindings and observers is that observers update almost immediately, while bindings update only at the end of each run loop. This offers considerable improvements in performance, but can be confusing if you are acting outside the normal SproutCore context – for instance, when using a console.
+
+In this example, we used the absolute path to the property. Bindings also support relative properties and chained properties as well.
+
+As you can also see, when you update the value in one location, it is updated in the other. By defaults bindings are bi-directional but you can also set them to only go in one direction by using SC.Binding.oneWay instead.
+
+The Run Loop
+------------
+The run loop coordinates all the events within your application. This includes primarily observers and timers. This helps make sure that events stay synchronized and run at the proper times. One of the main ways this will affect your app is that bindings do not fire until the Run Loop has fired.
+
+SproutCore manages the run loop for you automatically triggering when it receives any browser events or user input
